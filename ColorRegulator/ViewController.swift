@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         congigureColorView()
         configureSliders()
-        setStartPreferences()
+        setupInitialValues()
 
     }
     
@@ -53,18 +53,11 @@ class ViewController: UIViewController {
                                             green: CGFloat(greenColorSlider.value), blue: CGFloat(blueColorSlider.value), alpha: 1)
     }
     
-    // MARK: Reset
-    @IBAction func pressResetButton(_ sender: UIButton) {
-        
-        redColorSlider.value = initialValue
-        greenColorSlider.value = initialValue
-        blueColorSlider.value = initialValue
-        setStartPreferences()
-    }
-    
     // MARK: Configuration
     private func congigureColorView() {
         colorView.layer.cornerRadius = colorView.frame.width / 35
+        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(initialValue),
+                            green: CGFloat(initialValue), blue: CGFloat(initialValue), alpha: 1)
     }
     
     private func configureSliders() {
@@ -78,12 +71,10 @@ class ViewController: UIViewController {
         blueColorSlider.maximumValue = maximumValue
     }
     
-    private func setStartPreferences() {
+    private func setupInitialValues() {
         redColorValue.text = String(format: "%.2f", initialValue)
         greenColorValue.text = String(format: "%.2f", initialValue)
         blueColorValue.text = String(format: "%.2f", initialValue)
-        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(redColorSlider.value),
-                            green: CGFloat(greenColorSlider.value), blue: CGFloat(blueColorSlider.value), alpha: 1)
     }
 }
 
