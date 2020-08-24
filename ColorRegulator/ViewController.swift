@@ -22,59 +22,37 @@ class ViewController: UIViewController {
     @IBOutlet weak var redColorSlider: UISlider!
     @IBOutlet weak var greenColorSlider: UISlider!
     @IBOutlet weak var blueColorSlider: UISlider!
-    
-    // MARK: Slider limits
-    private let minimumValue: Float = 0
-    private let maximumValue: Float = 1
-    private let initialValue: Float = 0.5
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        congigureColorView()
-        configureSliders()
-        setupInitialValues()
+        setupValues()
+        setViewColor()
+        configureView()
 
     }
     
     // MARK: Slider actions
-    @IBAction func dragRedColorSlider(_ sender: UISlider) {
-        redColorValue.text = String(format: "%.2f", redColorSlider.value)
-        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(redColorSlider.value),
-                                            green: CGFloat(greenColorSlider.value), blue: CGFloat(blueColorSlider.value), alpha: 1)
-    }
-    @IBAction func dragGreenColorSlider(_ sender: UISlider) {
-        greenColorValue.text = String(format: "%.2f", greenColorSlider.value)
-        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(redColorSlider.value),
-                                            green: CGFloat(greenColorSlider.value), blue: CGFloat(blueColorSlider.value), alpha: 1)
-    }
-    @IBAction func dragBlueColorSlider(_ sender: UISlider) {
-        blueColorValue.text = String(format: "%.2f", blueColorSlider.value)
-        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(redColorSlider.value),
-                                            green: CGFloat(greenColorSlider.value), blue: CGFloat(blueColorSlider.value), alpha: 1)
+    @IBAction func dragSliders(_ sender: UISlider) {
+        setViewColor()
+        setupValues()
     }
     
     // MARK: Configuration
-    private func congigureColorView() {
+    private func setupValues() {
+        redColorValue.text = String(format: "%.2f", redColorSlider.value)
+        greenColorValue.text = String(format: "%.2f", greenColorSlider.value)
+        blueColorValue.text = String(format: "%.2f", blueColorSlider.value)
+    }
+    
+    private func setViewColor() {
+        colorView.backgroundColor = UIColor(
+            displayP3Red: CGFloat(redColorSlider.value),
+            green: CGFloat(greenColorSlider.value),
+            blue: CGFloat(blueColorSlider.value),
+            alpha: 1)
+    }
+    
+    private func configureView() {
         colorView.layer.cornerRadius = colorView.frame.width / 35
-        colorView.backgroundColor = UIColor(displayP3Red: CGFloat(initialValue),
-                            green: CGFloat(initialValue), blue: CGFloat(initialValue), alpha: 1)
-    }
-    
-    private func configureSliders() {
-        redColorSlider.minimumValue = minimumValue
-        redColorSlider.maximumValue = maximumValue
-        
-        greenColorSlider.minimumValue = minimumValue
-        greenColorSlider.maximumValue = maximumValue
-        
-        blueColorSlider.minimumValue = minimumValue
-        blueColorSlider.maximumValue = maximumValue
-    }
-    
-    private func setupInitialValues() {
-        redColorValue.text = String(format: "%.2f", initialValue)
-        greenColorValue.text = String(format: "%.2f", initialValue)
-        blueColorValue.text = String(format: "%.2f", initialValue)
     }
 }
-
