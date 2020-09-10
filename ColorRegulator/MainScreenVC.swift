@@ -10,14 +10,9 @@ import UIKit
 
 protocol ColorManagement {
     func changeColor(by color: UIColor?)
-    func saveColor(from sliders: UISlider...)
 }
 
 class MainScreenVC: UIViewController {
-    
-    private var redColorValue: Float?
-    private var greenColorValue: Float?
-    private var blueColorValue: Float?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard
@@ -28,9 +23,7 @@ class MainScreenVC: UIViewController {
         }
         
         preferencesVC.delegate = self
-        preferencesVC.redValue = redColorValue
-        preferencesVC.greenValue = greenColorValue
-        preferencesVC.blueValue = blueColorValue
+        preferencesVC.color = view.backgroundColor
     }
 }
 
@@ -38,16 +31,5 @@ extension MainScreenVC: ColorManagement {
     
     func changeColor(by color: UIColor?) {
         view.backgroundColor = color
-    }
-    
-    func saveColor(from sliders: UISlider...) {
-        sliders.forEach { (slider) in
-            switch slider.tag {
-            case 0: redColorValue = slider.value
-            case 1: greenColorValue = slider.value
-            case 2: blueColorValue = slider.value
-            default: break
-            }
-        }
     }
 }

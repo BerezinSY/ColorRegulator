@@ -27,28 +27,27 @@ class PreferencesVC: UIViewController {
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     var delegate: ColorManagement!
-    
-    var redValue: Float?
-    var greenValue: Float?
-    var blueValue: Float?
+    var color: UIColor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         colorView.layer.cornerRadius = 15
+        
+        colorView.backgroundColor = color
+        
         setupValues(for: redSlider, greenSlider, blueSlider)
-        setupValues(for: redTF, greenTF, blueTF)
         setupValues(for: redLabel, greenLabel, blueLabel)
-        setupColorForViewBackground()
+        setupValues(for: redTF, greenTF, blueTF)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.view.endEditing(true)
+        super.touchesBegan(touches, with: event)
         view.endEditing(true)
     }
     
     @IBAction func save(_ sender: Any) {
-        delegate.changeColor(by: colorView.backgroundColor)
-        delegate.saveColor(from: redSlider, greenSlider, blueSlider)
+        delegate.changeColor(by: colorView.backgroundColor ?? .white)
         dismiss(animated: true)
     }
     
@@ -61,28 +60,26 @@ class PreferencesVC: UIViewController {
         
         switch sender.tag {
         case 0:
-            redLabel.text = string(from: sender)
-            redTF.text = string(from: sender)
+            setupValues(for: redLabel)
+            setupValues(for: redTF)
         case 1:
-            greenLabel.text = string(from: sender)
-            greenTF.text = string(from: sender)
+            setupValues(for: greenLabel)
+            setupValues(for: greenTF)
         case 2:
-            blueLabel.text = string(from: sender)
-            blueTF.text = string(from: sender)
+            setupValues(for: blueLabel)
+            setupValues(for: blueTF)
         default: break
         }
         setupColorForViewBackground()
     }
     
     private func setupValues(for sliders: UISlider...) {
+        let ciColor = CIColor(color: color)
         sliders.forEach { (slider) in
             switch slider.tag {
-            case 0 where redValue != nil:
-                slider.value = redValue!
-            case 1 where greenValue != nil:
-                slider.value = greenValue!
-            case 2 where blueValue != nil:
-                slider.value = blueValue!
+            case 0: redSlider.value = Float(ciColor.red)
+            case 1: greenSlider.value = Float(ciColor.green)
+            case 2: blueSlider.value = Float(ciColor.blue)
             default: break
             }
         }
@@ -112,19 +109,10 @@ class PreferencesVC: UIViewController {
     
     private func setupColorForViewBackground() {
         colorView.backgroundColor = UIColor(
-            displayP3Red: CGFloat(redSlider.value),
+            red: CGFloat(redSlider.value),
             green: CGFloat(greenSlider.value),
             blue: CGFloat(blueSlider.value),
             alpha: 1)
-    }
-    
-    private func setupColorFromTextFields() {
-        redValue = Float(redTF.text ?? "")!
-        greenValue = Float(greenTF.text ?? "")!
-        blueValue = Float(blueTF.text ?? "")!
-        setupValues(for: redSlider, greenSlider, blueSlider)
-        setupValues(for: redLabel, greenLabel, blueLabel)
-        setupColorForViewBackground()
     }
     
     private func string(from slider: UISlider) -> String {
@@ -133,28 +121,29 @@ class PreferencesVC: UIViewController {
 }
 
 extension PreferencesVC: UITextFieldDelegate {
-    
+
     func textField(_ textField: UITextField,
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        
+
         let maxLength = 4
         let currentLength: NSString = textField.text! as NSString
         let targetLength: NSString = currentLength.replacingCharacters(
             in: range,
             with: string) as NSString
-        print("func shouldChangeCharacters")
         return targetLength.length <= maxLength
     }
 
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        setupColorFromTextFields()
-        return true
+    func textFieldDidEndEditing(_ textField: UITextField,
+                                reason: UITextField.DidEndEditingReason) {
+        redSlider.value = Float(redTF.text ?? "")!
+        greenSlider.value = Float(greenTF.text ?? "")!
+        blueSlider.value = Float(blueTF.text ?? "")!
+        setupColorForViewBackground()
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        setupColorFromTextFields()
-        save(saveButton!)
+        textField.resignFirstResponder()
         return true
     }
 }
